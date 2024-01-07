@@ -8,14 +8,11 @@
 import Foundation
 import UIKit
 
-class RoomViewModel {
-    
-    let networking : Networking = NetworkManager()
-    weak var coordinator : Coordinator?
+final class RoomViewModel : BaseViewModel {
     
     init(data: [Room]? = nil, coordinator : Coordinator?) {
-        self.coordinator = coordinator
         self.rooms = data
+        super.init(coordinator: coordinator)
     }
     
     var rooms : [Room]? = [] {

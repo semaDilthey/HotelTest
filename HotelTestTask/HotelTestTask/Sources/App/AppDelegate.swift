@@ -13,16 +13,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        
-//        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
-        UINavigationBar.appearance().shadowImage = UIImage()
+        // Override point for customization after application launch
+      
+        var navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.backgroundColor = .white
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.titleTextAttributes = [NSAttributedString.Key.font : (UIFont.SD.proDisplayFont(size: 16, weight: .medium))!]
+        navBarAppearance.shadowColor = .white
+        UINavigationBar.appearance().standardAppearance = navBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().tintColor = .black
         UINavigationBar.appearance().barTintColor = .white
-        UINavigationBar.appearance().isTranslucent = true
-        UINavigationBar.appearance().clipsToBounds = false
-        UINavigationBar.appearance().backgroundColor = .white
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.font : (UIFont.SD.proDisplayFont(size: 16, weight: .medium))]
         return true
     }
 

@@ -8,14 +8,13 @@
 import Foundation
 import UIKit
 
-class PaidViewModel {
+final class PaidViewModel : BaseViewModel {
     
-    weak var coordinator : Coordinator?
     var bookingNumber : Int?
 
     init(bookingNumber : Int, coordinator: Coordinator?) {
-        self.coordinator = coordinator
         self.bookingNumber = bookingNumber
+        super.init(coordinator: coordinator)
     }
         
     func configure(label: UILabel) {

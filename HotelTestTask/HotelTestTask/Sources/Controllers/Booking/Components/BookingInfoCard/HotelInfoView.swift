@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class BookingInfoHotelCard: UIView {
+final class HotelInfoView: UIView {
     
     var viewModel: BookingViewModel? {
         didSet {
@@ -27,7 +27,7 @@ class BookingInfoHotelCard: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with viewModel: BookingViewModel?) {
+    public func configure(with viewModel: BookingViewModel?) {
         guard let booking = viewModel?.bookingData else { return }
         DispatchQueue.main.async { [self] in
             rating.rating.text = String(booking.horating) + " " + booking.ratingName
@@ -36,9 +36,9 @@ class BookingInfoHotelCard: UIView {
         }
     }
     
-    let rating = RatingLabel()
+    private let rating = RatingLabel()
     
-    let hotelName : UILabel = {
+    private let hotelName : UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +48,7 @@ class BookingInfoHotelCard: UIView {
         return label
     }()
     
-    let location : UILabel = {
+    private let location : UILabel = {
         let label = UILabel()
         label.textColor = UIColor.SD.blue
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +60,7 @@ class BookingInfoHotelCard: UIView {
 }
 
 //MARK: - SetupUI
-extension BookingInfoHotelCard {
+extension HotelInfoView {
     private func setupUI() {
         addSubview(rating)
         rating.translatesAutoresizingMaskIntoConstraints = false

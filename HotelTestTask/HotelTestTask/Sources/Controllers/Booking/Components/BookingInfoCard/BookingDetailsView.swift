@@ -8,8 +8,8 @@
 import Foundation
 import UIKit
 
-class BookingInfoBookingCard: UIView {
-
+final class BookingDetailsView: UIView {
+    
     var viewModel: BookingViewModel? {
         didSet {
             configure(with: viewModel)
@@ -27,7 +27,7 @@ class BookingInfoBookingCard: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with viewModel: BookingViewModel?) {
+    public func configure(with viewModel: BookingViewModel?) {
         guard let booking = viewModel?.bookingData else { return }
         DispatchQueue.main.async { [self] in
             departureValueLabel.text = booking.departure
@@ -39,24 +39,28 @@ class BookingInfoBookingCard: UIView {
             foodValueLabel.text = booking.nutrition
         }
     }
+    
+    private let departureTitleLabel = UILabel()
+    private let locationTitleLabel = UILabel()
+    private let dateTitleLabel = UILabel()
+    private let nightsTitleLabel = UILabel()
+    private let hotelTitleLabel = UILabel()
+    private let roomTitleLabel = UILabel()
+    private let foodTitleLabel = UILabel()
+    
+    private let departureValueLabel = UILabel()
+    private  let locationValueLabel = UILabel()
+    private let dateValueLabel = UILabel()
+    private let nightsValueLabel = UILabel()
+    private let hotelValueLabel = UILabel()
+    private let roomValueLabel = UILabel()
+    private let foodValueLabel = UILabel()
+    
+    
+}
 
-    let departureTitleLabel = UILabel()
-    let locationTitleLabel = UILabel()
-    let dateTitleLabel = UILabel()
-    let nightsTitleLabel = UILabel()
-    let hotelTitleLabel = UILabel()
-    let roomTitleLabel = UILabel()
-    let foodTitleLabel = UILabel()
 
-    let departureValueLabel = UILabel()
-    let locationValueLabel = UILabel()
-    let dateValueLabel = UILabel()
-    let nightsValueLabel = UILabel()
-    let hotelValueLabel = UILabel()
-    let roomValueLabel = UILabel()
-    let foodValueLabel = UILabel()
-
-
+extension BookingDetailsView {
     // Установка и настройка интерфейса
     private func setupUI() {
         // Засунули в вертикальный стак горизональные стаки createInfoStack(...)
@@ -86,17 +90,6 @@ class BookingInfoBookingCard: UIView {
         configureLabels()
     }
     
-    // Создание стека с заголовком и значением
-    private func createInfoStack(titleLabel: UILabel, valueLabel: UILabel) -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        stackView.alignment = .firstBaseline
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(valueLabel)
-        return stackView
-    }
-
     // Настроили содержимое лейблов
     private func configureLabels() {
         configureLabel(titleLabel: departureTitleLabel, valueLabel: departureValueLabel, title: "Вылет из", color: .gray, leadingConstant: 16)
@@ -107,7 +100,7 @@ class BookingInfoBookingCard: UIView {
         configureLabel(titleLabel: roomTitleLabel, valueLabel: roomValueLabel, title: "Номер", color: .gray, leadingConstant: 16)
         configureLabel(titleLabel: foodTitleLabel, valueLabel: foodValueLabel, title: "Питание", color: .gray, leadingConstant: 16)
     }
-
+    
     // Настройка лейбла
     private func configureLabel(titleLabel: UILabel, valueLabel: UILabel, title: String, color: UIColor, leadingConstant: CGFloat) {
         titleLabel.text = title
@@ -129,6 +122,25 @@ class BookingInfoBookingCard: UIView {
             valueLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -16),
         ])
     }
+    
+    // Создание стека с заголовком и значением
+    private func createInfoStack(titleLabel: UILabel, valueLabel: UILabel) -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .firstBaseline
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(valueLabel)
+        return stackView
+    }
+
 }
+
+    
+
+
+
+
+
 
 

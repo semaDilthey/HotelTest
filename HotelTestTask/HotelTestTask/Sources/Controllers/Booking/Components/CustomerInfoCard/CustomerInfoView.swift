@@ -14,9 +14,9 @@ protocol CustomerDelegate : TouristDelegate {
     func didUpdateCustomer(phone: String)
 }
 
-class CustomerInfoCard : UIView {
+final class CustomerInfoView : UIView {
     
-    var delegate : CustomerDelegate?
+    weak var delegate : CustomerDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,21 +35,9 @@ class CustomerInfoCard : UIView {
         return title
     }()
     
-    let phoneTextField = createCocoaTextField(placeholder: "Номер телефона")
-    let emailTextFiled = createCocoaTextField(placeholder: "email")
-    
-    static func createCocoaTextField(placeholder: String) -> CocoaTextField {
-        let phoneTextField = CocoaTextField()
-        phoneTextField.translatesAutoresizingMaskIntoConstraints = false
-        phoneTextField.borderColor = .clear
-        phoneTextField.defaultBackgroundColor = UIColor.SD.greyLight!
-        phoneTextField.focusedBackgroundColor = UIColor.SD.greyLight!
-        phoneTextField.placeholder = placeholder
-        phoneTextField.font = UIFont.SD.proDisplayFont(size: 16, weight: .thin)
-        phoneTextField.activeHintColor = UIColor.SD.grey!
-        return phoneTextField
-    }
-    
+    let phoneTextField = CocoaTextField.create(placeholder: "Номер телефона")
+    let emailTextFiled = CocoaTextField.create(placeholder: "email")
+
     private let noticeLabel : UILabel = {
         let noticeLabel = UILabel()
         noticeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +51,7 @@ class CustomerInfoCard : UIView {
 }
 
 //MARK: - SetupUI
-extension CustomerInfoCard {
+extension CustomerInfoView {
     
     private func setupUI(){
         backgroundColor = .white
@@ -106,7 +94,7 @@ extension CustomerInfoCard {
 
 //MARK: - UITextFieldDelegate
 
-extension CustomerInfoCard : UITextFieldDelegate {
+extension CustomerInfoView : UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == phoneTextField {
@@ -115,7 +103,6 @@ extension CustomerInfoCard : UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-       
         configureTextFiled(textFields: [emailTextFiled, phoneTextField])
         return true
     }
@@ -134,7 +121,7 @@ extension CustomerInfoCard : UITextFieldDelegate {
         }
 }
 
-extension CustomerInfoCard {
+extension CustomerInfoView {
     // конфигурирую делегат текстфилда датбы не плодить кучу кода тамс
     private func configureTextFiled(textFields: [CocoaTextField]) {
         for field in textFields {
@@ -169,3 +156,5 @@ extension CustomerInfoCard {
     }
     
 }
+
+

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class BookingInfoCard : UIView {
+final class BookingInfoCard : UIView {
 
     var viewModel: BookingViewModel? {
         didSet {
@@ -26,8 +26,8 @@ class BookingInfoCard : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let hotelInfoView = BookingInfoHotelCard()
-    let bookingInfoView = BookingInfoBookingCard()
+    let hotelInfoView = HotelInfoView()
+    let bookingInfoView = BookingDetailsView()
 }
 
 //MARK: - Setup UI

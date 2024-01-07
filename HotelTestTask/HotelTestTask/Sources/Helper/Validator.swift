@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import CocoaTextField
+import UIKit
 
 enum Validator {
     
@@ -14,6 +16,16 @@ enum Validator {
 
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
+    }
+    
+    static func checkFullfillment(in textFields: [CocoaTextField]) {
+        for field in textFields {
+            if field.text == "" {
+                field.borderColor = .red
+                UISelectionFeedbackGenerator().selectionChanged()
+            }
+        }
+        
     }
     
 }

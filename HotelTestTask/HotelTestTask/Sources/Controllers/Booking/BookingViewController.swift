@@ -29,20 +29,18 @@ final class BookingViewController: UIViewController {
         
         loadingHandler()
         buttonPriceHandler()
-        customerInfoCard.delegate = self
-        touristCollectionView.delegate = self
+        setDelegates()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateLayoutSize()
         toPayButton.addTarget(self, action: #selector(payButtonPressed), for: .touchUpInside)
     }
     
-    lazy var scrollView = UIScrollView(frame: .zero)
+    private lazy var scrollView = UIScrollView(frame: .zero)
     
     private let bookingInfoCard = BookingInfoCard()
-    private let customerInfoCard = CustomerInfoCard()
+    private let customerInfoCard = CustomerInfoView()
     
     private let touristCollectionView = TouristCollectionView()
     
@@ -55,42 +53,21 @@ final class BookingViewController: UIViewController {
     }
     
     @objc func payButtonPressed() {
-        viewModel.coordinator?.navigateTo(controller: .paidController(bookingNumber: Int.random(in: 0...1000000)))
-//        if viewModel.customer.isFullyFilled() {
-//            viewModel.coordinator.showPaidController(controller: navigationController)
-//            
-//        } else {
-//            print("Customer model \(viewModel.customer)")
-//            
-//            if viewModel.customer.email == "" {
-//                customerInfoCard.emailTextFiled.borderColor = .red
-//            }
-//            
-//            if viewModel.customer.phone == "" {
-//                customerInfoCard.phoneTextField.borderColor = .red
-//            }
-//        }
-//        
+        if viewModel.customer.isFullyFilled() {
+            viewModel.coordinator?.navigateTo(controller: .paidController(bookingNumber: Int.random(in: 0...1000000)))
+            print("FullFilled customer is \(viewModel.customer)")
+        } else {
+            let customerTextFields = [customerInfoCard.emailTextFiled, customerInfoCard.phoneTextField]
+            
+            let cell = touristCollectionView.collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! TouristCell
+            let touristTextFields = cell.arrayTextFileds()
+            Validator.checkFullfillment(in: customerTextFields + touristTextFields)
+        }
     }
 }
 
 //MARK: - CallBacks
 extension BookingViewController {
-    // рассчитывает размер touristCollectionView в зависимости от
-    // размера collectionViewContentSize через кложуру sendSize
-    private func updateLayoutSize() {
-
-        touristCollectionView.sendSize = { [weak self] size in
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.3) {
-                    self?.touristCollectionView.constraints.first?.isActive = false
-                    self?.touristCollectionView.heightAnchor.constraint(equalToConstant: size).isActive = true
-                    self?.scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height+size+20)
-                }
-                self?.view.layoutIfNeeded()
-            }
-        }
-    }
     
     // Прокидываем загруженные данные в чайлдвьюхи
     private func loadingHandler() {
@@ -103,12 +80,19 @@ extension BookingViewController {
     
     // получаем прайс в титл нашей кнопки оплаты
     private func buttonPriceHandler() {
-        totalChargesCard.configTotalPrice = { total in
+        totalChargesCard.setTotalPrice = { total in
             DispatchQueue.main.async { [weak self] in
                 self?.toPayButton.title = total
             }
         }
     }
+    
+    private func setDelegates() {
+        customerInfoCard.delegate = self
+        touristCollectionView.delegate = self
+        touristCollectionView.layoutDelegate = self
+    }
+    
 }
  //MARK: - Setup UI Components
 extension BookingViewController {
@@ -179,9 +163,10 @@ extension BookingViewController {
     
     private func setupNavigationBar() {
         navigationItem.title = Constants.Title.booking.rawValue
-        let backButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(backButtonPressed))
+        let customButton = UIBarButtonItem(image: UIImage(named: "backButton"), style: .plain, target: self, action: #selector(backButtonPressed))
         navigationItem.hidesBackButton = false
-        navigationItem.leftBarButtonItem = backButton
+        navigationItem.leftBarButtonItem = customButton
+        navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
     }
 }
 
@@ -197,14 +182,35 @@ extension BookingViewController : CustomerDelegate {
         viewModel.customer.phone = phone
     }
     
-    func didUpdateTourist(tourist: TouristModelProtocol,at : IndexPath) {
-        guard at.row < touristCollectionView.torists.count else { return }
+    func didUpdateTourist(tourist: TouristModelProtocol, indexPath : IndexPath) {
+        guard indexPath.row < touristCollectionView.tourists.count else { return }
         
-        viewModel.customer.tourists.insert(tourist, at: at.row)
+        viewModel.customer.tourists.insert(tourist, at: indexPath.row)
         
-        if viewModel.customer.tourists.count > touristCollectionView.torists.count {
+        if viewModel.customer.tourists.count > touristCollectionView.tourists.count {
             viewModel.customer.tourists.removeLast()
         }
+    }
+    
+    
+}
+
+extension BookingViewController : TouristCollectionLayoutProtocol {
+    
+    // рассчитывает размер touristCollectionView в зависимости от
+    // размера collectionViewContentSize через делегат
+    
+    func didUpdateLayoutSize(size: CGFloat) {
+        
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.touristCollectionView.constraints.first?.isActive = false
+                self.touristCollectionView.heightAnchor.constraint(equalToConstant: size).isActive = true
+                self.scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height+size+20)
+            }
+            self.view.layoutIfNeeded()
+        }
+        
     }
     
     

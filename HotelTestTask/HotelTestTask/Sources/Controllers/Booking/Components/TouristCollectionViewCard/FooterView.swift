@@ -9,10 +9,13 @@ import Foundation
 import UIKit
 import SnapKit
 
-class TouristFooterView : UICollectionReusableView {
+final class TouristFooterView : UICollectionReusableView {
     
     static let identifier = "TouristFooterView"
-    
+    // коллбэк по нажатию на кнопку "Добавить". В футере TouristCollectionView
+    // вызываем метод addTourist()
+    var buttonCallback : (()->())?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -23,8 +26,6 @@ class TouristFooterView : UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var buttonCallback : (()->())?
-
     private let title : UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -45,6 +46,21 @@ class TouristFooterView : UICollectionReusableView {
     
     
     @objc func buttonClicked() {
+        UIView.animate(withDuration: 0.5, animations: {
+               // Поворачиваем изображение на +90 градусов
+            self.addButton.imageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi/2)
+            self.addButton.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+           }) { _ in
+               // По завершении первой анимации, поворачиваем изображение на -90 градусов
+               UIView.animate(withDuration: 0.5, animations: {
+                   self.addButton.imageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi/2)
+               }) { (_) in
+                   // По завершении второй анимации, возвращаем изображение в исходное положение
+                   self.addButton.imageView?.transform = CGAffineTransform.identity
+                   self.addButton.transform = CGAffineTransform.identity
+               }
+           }
+        
         buttonCallback?()
     }
     

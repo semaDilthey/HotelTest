@@ -7,22 +7,18 @@
 
 import Foundation
 
-class BookingViewModel {
-    
-    let networking : Networking = NetworkManager()
-    weak var coordinator : Coordinator?
+final class BookingViewModel : BaseViewModel {
     
     var roomId : Int
-        
+    var customer : CustomerProtocol = Customer()
+
     init(roomId: Int, coordinator: Coordinator?) {
         self.roomId = roomId
-        self.coordinator = coordinator
+        super.init(coordinator: coordinator)
     }
     
-    var customer : CustomerProtocol = Customer()
-    
     var bookingData : Booking? = nil
-    
+
     func loadBooking(completion: @escaping () -> Void) {
        fetchBooking(id: 1, completion: completion)
     }

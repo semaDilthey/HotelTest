@@ -35,6 +35,7 @@ class BlueButton : UIButton {
         layer.cornerRadius = 15
         setTitle(title, for: .normal)
         titleLabel?.font = UIFont.SD.proDisplayFont(size: 16, weight: .medium)
+        startAnimatingPressActions()
     }
     
 }

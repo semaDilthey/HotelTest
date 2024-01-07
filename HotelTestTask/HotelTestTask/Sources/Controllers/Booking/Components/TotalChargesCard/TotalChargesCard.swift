@@ -8,8 +8,8 @@
 import Foundation
 import UIKit
 
-class TotalChargesCard: UIView {
-
+final class TotalChargesCard: UIView {
+    
     var viewModel: BookingViewModel? {
         didSet {
             configure(with: viewModel)
@@ -28,7 +28,7 @@ class TotalChargesCard: UIView {
     }
     
     // в bookingViewControllere передаем прайс в титл для кнопки
-    var configTotalPrice : ((String) -> Void)?
+    var setTotalPrice : ((String) -> Void)?
     
     private func configure(with viewModel: BookingViewModel?) {
         guard let booking = viewModel?.bookingData else { return }
@@ -38,22 +38,24 @@ class TotalChargesCard: UIView {
             serviceChargeValue.text = String(booking.serviceCharge) + " ₽"
             totalChargeValue.text = String(booking.tourPrice + booking.fuelCharge + booking.serviceCharge) + " ₽"
             totalChargeValue.textColor = UIColor.SD.blue
-            configTotalPrice?("Оплатить " + (totalChargeValue.text ?? "Оплатить"))
+            setTotalPrice?("Оплатить " + (totalChargeValue.text ?? "Оплатить"))
         }
     }
-
-    let tourPriceLabel = UILabel()
-    let fuelChargeLabel = UILabel()
-    let serviceChargeLabel = UILabel()
-    let totalChargeLabel = UILabel()
-
-
-    let tourPriceValue = UILabel()
-    let fuelChargeValue = UILabel()
-    let serviceChargeValue = UILabel()
-    let totalChargeValue = UILabel()
-
-
+    
+    private let tourPriceLabel = UILabel()
+    private let fuelChargeLabel = UILabel()
+    private let serviceChargeLabel = UILabel()
+    private let totalChargeLabel = UILabel()
+    
+    
+    private let tourPriceValue = UILabel()
+    private let fuelChargeValue = UILabel()
+    private let serviceChargeValue = UILabel()
+    private let totalChargeValue = UILabel()
+    
+}
+    
+extension TotalChargesCard {
     // Установка и настройка интерфейса
     private func setupUI() {
         // Засунули в вертикальный стак горизональные стаки createInfoStack(...)
@@ -81,17 +83,6 @@ class TotalChargesCard: UIView {
         configureLabels()
     }
     
-    // Создание стека с заголовком и значением
-    private func createInfoStack(titleLabel: UILabel, valueLabel: UILabel) -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        stackView.alignment = .firstBaseline
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(valueLabel)
-        return stackView
-    }
-
     // Настроили содержимое лейблов
     private func configureLabels() {
         configureLabel(titleLabel: tourPriceLabel, valueLabel: tourPriceValue, title: "Тур", color: .gray, leadingConstant: 16)
@@ -99,7 +90,7 @@ class TotalChargesCard: UIView {
         configureLabel(titleLabel: serviceChargeLabel, valueLabel: serviceChargeValue, title: "Сервисный сбор", color: .gray, leadingConstant: 16)
         configureLabel(titleLabel: totalChargeLabel, valueLabel: totalChargeValue, title: "К оплате", color: .gray, leadingConstant: 16)
     }
-
+    
     // Настройка лейбла
     private func configureLabel(titleLabel: UILabel, valueLabel: UILabel, title: String, color: UIColor, leadingConstant: CGFloat) {
         titleLabel.text = title
@@ -121,4 +112,24 @@ class TotalChargesCard: UIView {
             valueLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -16),
         ])
     }
+    
+    // Создание стека с заголовком и значением
+    private func createInfoStack(titleLabel: UILabel, valueLabel: UILabel) -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .firstBaseline
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(valueLabel)
+        return stackView
+    }
 }
+
+
+    
+  
+
+  
+
+    
+

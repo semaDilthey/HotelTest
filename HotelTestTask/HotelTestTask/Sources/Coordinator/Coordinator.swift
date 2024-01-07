@@ -18,8 +18,10 @@ protocol Coordinator : AnyObject {
 }
 
 extension Coordinator {
+    
     func dismiss() {
         navigationController.popViewController(animated: true)
     }
+    
 }
 

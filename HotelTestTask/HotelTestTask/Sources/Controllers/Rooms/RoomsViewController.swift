@@ -91,9 +91,10 @@ extension RoomsViewController {
     }
     
     private func setupNavigationBar() {
-        let backButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(backButtonPressed))
+        let customButton = UIBarButtonItem(image: UIImage(named: "backButton"), style: .plain, target: self, action: #selector(backButtonPressed))
         navigationItem.hidesBackButton = false
-        navigationItem.leftBarButtonItem = backButton
+        navigationItem.leftBarButtonItem = customButton
+        navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
     }
     
 }

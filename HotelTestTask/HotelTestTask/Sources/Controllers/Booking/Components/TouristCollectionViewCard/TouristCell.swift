@@ -3,7 +3,6 @@ import UIKit
 import SnapKit
 import CocoaTextField
 
-
 final class TouristCell : UICollectionViewCell {
     
     static let identifier = "TouristCell"
@@ -11,6 +10,8 @@ final class TouristCell : UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
+
+        arrayTextFileds().map { $0.delegate = self }
     }
     
     required init?(coder: NSCoder) {
@@ -22,11 +23,11 @@ final class TouristCell : UICollectionViewCell {
            updateAppearance()
         }
     }
-    
-    var updateTourist : ((TouristModelProtocol)->())?
-    var tourist : TouristModelProtocol = TouristModel()
-    var buttonCallback : (()->())?
-    
+    // Вызывается в момент, когда все текстфилды были заполнены в методе configureTextFiled
+    public var didFilledTourist : ((TouristModelProtocol)->())?
+    // локальный объект туриста в ячейке
+    private var tourist : TouristModelProtocol = TouristModel()
+        
     func configureTitle(for indexPath: IndexPath) {
         switch indexPath.row {
         case 0 : title.text = "Первый турист"
@@ -38,40 +39,39 @@ final class TouristCell : UICollectionViewCell {
     }
     
     // констрейнт для открытого состояния
-    var expandedConstraint : Constraint!
+    private var expandedConstraint : Constraint!
     
     // констрейнт для сжатого состояния
-    var collapsedConstraint : Constraint!
+    private var collapsedConstraint : Constraint!
     
     private lazy var mainContainter = UIView()
     private lazy var topContrainer = UIView()
     private lazy var bottomContrainer = UIView()
 
-    let title : UILabel = {
+    private let title : UILabel = {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
     }()
 
-    lazy var expandButton : UIButton = {
+    private lazy var expandButton : UIButton = {
         let expandButton = UIButton(type: .custom)
         expandButton.translatesAutoresizingMaskIntoConstraints = false
         expandButton.setImage(UIImage(named: "nonExpandedIcon"), for: .normal)
         expandButton.backgroundColor = UIColor.SD.blueLight
         expandButton.layer.cornerRadius = 6
-        expandButton.addTarget(self, action: #selector(buttonClicked), for: .touchUpInside)
     
         return expandButton
     }()
     
-    lazy var nameField = createTextFiled(with: "Имя")
-    lazy var surnameField = createTextFiled(with: "Фамилия")
-    lazy var birthdayFiled = createTextFiled(with: "Дата рождения")
-    lazy var citizenshipField = createTextFiled(with: "Гражданство")
-    lazy var passportNumberField = createTextFiled(with: "Номер загранпаспорта")
-    lazy var passportValidationField = createTextFiled(with: "Срок действия загранпаспорта")
+    private lazy var nameField = CocoaTextField.create(placeholder: "Имя")
+    private lazy var surnameField = CocoaTextField.create(placeholder: "Фамилия")
+    private lazy var birthdayFiled = CocoaTextField.create(placeholder: "Дата рождения")
+    private lazy var citizenshipField = CocoaTextField.create(placeholder: "Гражданство")
+    private lazy var passportNumberField = CocoaTextField.create(placeholder: "Номер загранпаспорта")
+    private lazy var passportValidationField = CocoaTextField.create(placeholder: "Срок действия загранпаспорта")
     
-    private func getTextFields() -> [CocoaTextField] {
+    public func arrayTextFileds() -> [CocoaTextField] {
         var array : [CocoaTextField] = []
         array.append(nameField)
         array.append(surnameField)
@@ -81,12 +81,8 @@ final class TouristCell : UICollectionViewCell {
         array.append(passportValidationField)
         return array
     }
-    
-    @objc func buttonClicked() {
-        buttonCallback?()
-    }
-    
 }
+
 //MARK: - Setup UI
 extension TouristCell {
     
@@ -101,18 +97,30 @@ extension TouristCell {
         updateAppearance()
     }
     
+    // обновляет внешний вид в зависимости от состояния ячейки (свернуто/развернуто)
     private func updateAppearance() {
         collapsedConstraint.isActive = !isSelected
         expandedConstraint.isActive = isSelected
-        
+        // разворот кнопки-галочки
         UIView.animate(withDuration: 0.3) {
             let upsideDown = CGAffineTransform(rotationAngle: .pi * -0.999)
             self.expandButton.imageView?.transform = self.isSelected ? upsideDown : .identity
         }
+
+        if expandedConstraint.isActive {
+            UIView.animate(withDuration: 0.25, animations: {
+                // Уменьшаем размер ячейки
+                self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            }) { _ in 
+                // Восстанавливаем размер ячейки после завершения анимации
+                UIView.animate(withDuration: 0.25) {
+                    self.transform = CGAffineTransform.identity
+                }
+            }
+        }
     }
     
     private func makeConstaints() {
-        
         contentView.addSubview(mainContainter)
         mainContainter.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -178,30 +186,13 @@ extension TouristCell {
     }
 }
 
-
-extension TouristCell {
-    
-    private func createTextFiled(with placeholder: String) -> CocoaTextField {
-        let textField = CocoaTextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.borderColor = .clear
-        textField.defaultBackgroundColor = UIColor.SD.greyLight!
-        textField.focusedBackgroundColor = UIColor.SD.greyLight!
-        textField.placeholder = placeholder
-        textField.font = UIFont.SD.proDisplayFont(size: 16, weight: .thin)
-        textField.activeHintColor = UIColor.SD.grey!
-        textField.delegate = self
-        return textField
-    }
-    
-}
-
+//MARK: -  UITextFieldDelegate
 extension TouristCell : UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case nameField, surnameField, birthdayFiled, citizenshipField, passportNumberField, passportValidationField:
-            configureTextFiled(textFields: [nameField, surnameField, birthdayFiled, citizenshipField, passportNumberField, passportValidationField])
+            configureTouristModel(byTextFields: [nameField, surnameField, birthdayFiled, citizenshipField, passportNumberField, passportValidationField])
             textField.resignFirstResponder()
             return true
         default: 
@@ -210,12 +201,12 @@ extension TouristCell : UITextFieldDelegate {
     }
 }
 
-
+//MARK:  Конфигуригуем модель от текситфилда
 extension TouristCell {
     
-    private func configureTextFiled(textFields: [CocoaTextField]) {
+    private func configureTouristModel(byTextFields: [CocoaTextField]) {
 
-            for field in textFields {
+            for field in byTextFields {
                 if field.isEditing {
                     field.resignFirstResponder()
 
@@ -247,9 +238,10 @@ extension TouristCell {
                     }
                 }
             }
-        print("tourist in cell \(tourist)")
-        updateTourist?(tourist)
+        
+        if tourist.isFullyFilled() {
+            didFilledTourist?(tourist)
+        }
     }
 }
-
 

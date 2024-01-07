@@ -7,14 +7,7 @@
 
 import Foundation
 
-class MainViewModel {
-    
-    private var networking : Networking = NetworkManager()
-    weak var coordinator : Coordinator?
-    
-    init(coordinator: Coordinator) {
-        self.coordinator = coordinator
-    }
+final class MainViewModel : BaseViewModel {
 
     var hotels : [Hotel]? = []
     
