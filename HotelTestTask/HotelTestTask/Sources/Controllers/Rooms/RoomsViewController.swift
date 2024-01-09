@@ -37,8 +37,6 @@ final class RoomsViewController : UITableViewController {
     }
 
     @objc func backButtonPressed() {
-//        let vc = MainViewController(viewModel: MainViewModel(coordinator: Coordinator()))
-        navigationController?.popViewController(animated: true)
         viewModel.coordinator?.dismiss()
     }
 }

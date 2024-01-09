@@ -15,7 +15,7 @@ protocol TouristDelegate : AnyObject {
 
 protocol TouristCollectionLayoutProtocol : AnyObject {
     /// Вызываем при любом изменении лэйаута коллекции (добавлении ячейки/удаление, раскрытие/закрытие)
-    func didUpdateLayoutSize(size: CGFloat)
+    func didUpdateLayoutSize(size: CGFloat, offset : CGPoint?)
 }
 
 final class TouristCollectionView: UIView {
@@ -37,11 +37,11 @@ final class TouristCollectionView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height)
+        layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height, offset: nil)
     }
     
     public lazy var collectionView : UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = JumpAvoidingFlowLayout() // переписанный лэйаут, при котором избавляемся от резкости при раскрытии закрытии ячеек
         layout.scrollDirection = .vertical
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -95,7 +95,7 @@ extension TouristCollectionView : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if tourists.count > 1 {
             DispatchQueue.main.async {
-                self.layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height)
+                self.layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height,  offset: nil)
             }
             return tourists.count
         } else {
@@ -164,14 +164,19 @@ extension TouristCollectionView : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
         collectionView.deselectItem(at: indexPath, animated: true)
         collectionView.performBatchUpdates(nil)
-        layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height)
+        layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height,  offset: nil)
         return true
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
         collectionView.performBatchUpdates(nil)
-        layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height)
+        
+        DispatchQueue.main.async {
+            collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+            self.layoutDelegate?.didUpdateLayoutSize(size: collectionView.collectionViewLayout.collectionViewContentSize.height,  offset: CGPoint())
+
+        }
         return true
     }
 }

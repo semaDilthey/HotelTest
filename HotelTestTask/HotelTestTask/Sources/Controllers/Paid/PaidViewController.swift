@@ -60,7 +60,6 @@ final class PaidViewController : UIViewController {
     private lazy var superButton = BlueButton(title: "Супер")
     
     @objc func superButtonPressed() {
-        animateSize(view: superButton)
         viewModel.coordinator?.start()
     }
 }

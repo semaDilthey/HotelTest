@@ -79,7 +79,6 @@ final class MainViewController : UIViewController {
     
     @objc func buttonTapped() {
         
-        animateSize(view: chooseButton)
         // По хорошему надо нормально делать, но поскольку объект у нас один
         // то решил на это время не тратить
         guard let id = viewModel.hotels?.first?.id else { return }
@@ -87,7 +86,6 @@ final class MainViewController : UIViewController {
         let data = viewModel.getRooms(id: id, rooms: viewModel.getRooms())
         viewModel.coordinator?.navigateTo(controller: .roomsController(rooms: data, hotelName: "Номера"))
         #warning("Тут убрал метод, настроить его в некст тайм")
-//        viewModel.coordinator.showwRoomsViewController(controller: navigationController!, data: data, hotelName: "Номера")
     }
 }
 
@@ -95,7 +93,6 @@ extension MainViewController {
     
     private func setNavigationBar() {
         navigationItem.title = Constants.Title.hotel.rawValue
-        UINavigationBar.appearance().barTintColor = .white
     }
     
     private func setupUI() {
@@ -141,20 +138,3 @@ extension MainViewController {
         ])
     }
 }
-
-
-extension UIViewController {
-    
-    func animateSize(view : UIView) {
-        UIView.animate(withDuration: 0.25, animations: {
-            // Уменьшаем размер ячейки
-            self.view.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        }) { _ in
-            // Восстанавливаем размер ячейки после завершения анимации
-            UIView.animate(withDuration: 0.25) {
-                self.view.transform = CGAffineTransform.identity
-            }
-        }
-    }
-}
-

@@ -26,6 +26,7 @@ final class MainViewModel : BaseViewModel {
     public func getRooms() -> [Room] {
         var rooms : [Room] = []
         let semaphore = DispatchSemaphore(value: 0)
+        
         networking.getRooms { [weak self] data in
             switch data {
             case .success(let room):

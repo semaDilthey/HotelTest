@@ -200,13 +200,18 @@ extension BookingViewController : TouristCollectionLayoutProtocol {
     // рассчитывает размер touristCollectionView в зависимости от
     // размера collectionViewContentSize через делегат
     
-    func didUpdateLayoutSize(size: CGFloat) {
+    func didUpdateLayoutSize(size: CGFloat, offset: CGPoint?) {
         
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3) {
                 self.touristCollectionView.constraints.first?.isActive = false
                 self.touristCollectionView.heightAnchor.constraint(equalToConstant: size).isActive = true
                 self.scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height+size+20)
+               
+                if offset != nil {
+                    self.scrollView.contentOffset = CGPoint(x: 0, y: UIScreen.main.bounds.height - 200)
+                }
+                
             }
             self.view.layoutIfNeeded()
         }

@@ -46,13 +46,13 @@ final class TouristFooterView : UICollectionReusableView {
     
     
     @objc func buttonClicked() {
-        UIView.animate(withDuration: 0.5, animations: {
+        UIView.animate(withDuration: 0.9, animations: {
                // Поворачиваем изображение на +90 градусов
             self.addButton.imageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi/2)
             self.addButton.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
            }) { _ in
                // По завершении первой анимации, поворачиваем изображение на -90 градусов
-               UIView.animate(withDuration: 0.5, animations: {
+               UIView.animate(withDuration: 0.9, animations: {
                    self.addButton.imageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi/2)
                }) { (_) in
                    // По завершении второй анимации, возвращаем изображение в исходное положение
