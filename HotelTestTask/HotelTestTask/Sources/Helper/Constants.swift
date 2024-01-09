@@ -23,7 +23,6 @@ enum Constants {
         static let trailingInset : CGFloat = 16
         static let bigGap : CGFloat = 16
         static let smallGap : CGFloat = 8
-        
     }
     
 }

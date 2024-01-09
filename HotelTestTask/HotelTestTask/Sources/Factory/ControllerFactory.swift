@@ -15,7 +15,7 @@ enum Controllers {
 }
 
 
-protocol ControllerFactory {
+protocol ControllerFactory : AnyObject {
     func makeController(controller: Controllers, coordinator: Coordinator) -> UIViewController
 }
 

@@ -85,7 +85,6 @@ final class MainViewController : UIViewController {
         // создаем и прокидываем данные комнат создавая в этой вьюмодели в следуюущую
         let data = viewModel.getRooms(id: id, rooms: viewModel.getRooms())
         viewModel.coordinator?.navigateTo(controller: .roomsController(rooms: data, hotelName: "Номера"))
-        #warning("Тут убрал метод, настроить его в некст тайм")
     }
 }
 
@@ -132,7 +131,7 @@ extension MainViewController {
         NSLayoutConstraint.activate([
             chooseButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.Sizes.bigGap),
             chooseButton.heightAnchor.constraint(equalToConstant: 49),
-            chooseButton.topAnchor.constraint(equalTo: informationCard.bottomAnchor, constant: 16),
+            chooseButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
             chooseButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.Sizes.bigGap)
 
         ])

@@ -8,7 +8,7 @@
 import Foundation
 
 
-protocol FetchingServiceProtocol {
+protocol FetchingServiceProtocol : AnyObject {
     func getData<T: Decodable>(from urlString: String, completion: @escaping (Result<T, Error>) -> Void)
 }
 
