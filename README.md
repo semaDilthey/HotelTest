@@ -13,68 +13,42 @@ MVVM architecture was used in its creation. It consists of 4 screens with 1 flow
 - GCD
 - AutoLayout, SnapKit
 
- ## Presentation
-  ### 1. Main screen: 
-  At the top, there is a custom reusable Collection View with a Page Control for navigation. Additionally, below, there is a custom layout for displaying hotel features.
-  All of this is embedded within a Scroll View.
-
-![1  slides presentation](https://github.com/semaDilthey/Employees-Info/assets/128741166/d21933df-cefd-46ee-bdce-bb8092d90948), ![4  Searching](https://github.com/semaDilthey/Employees-Info/assets/128741166/a08017d7-dbaf-4c7f-ad4d-0325a01b4fdd) ,![3  sorting by name or birthday](https://github.com/semaDilthey/Employees-Info/assets/128741166/781cea46-600c-4269-87b8-0dd1ce303fe1)
-
- ### 2. Rooms Screen:
- This is a simple table view with 2 cells, as the API contains only 2 objects. It utilizes the same custom Collection View and custom layout for features. 
- The "Learn more" button for each room is non-clickable. When either of the 2 rooms is selected, further details always load based on the ID == 1.
- 
-![2  details screen and UIApplication functionality](https://github.com/semaDilthey/Employees-Info/assets/128741166/913bcf91-49fb-4e0b-8308-f551a50fe8f8)
-
-### 3. Booking Screen:
-The most complex screen in terms of both layout and business logic. It encompasses several views, one of which contains fields for entering email and phone number.
-Both are validated and must be filled in correctly. Additionally, expandable cells with 6 data input fields are implemented. By default, at least one tourist must be filled in to proceed to the payment screen. If any of the fields are left empty, they are highlighted in red, preventing further progression. 
-The "Add Tourist" button allows adding up to 4 individuals.
-
-![5  When there is no internet connection](https://github.com/semaDilthey/Employees-Info/assets/128741166/fdd670db-b745-46ae-97f8-776fccd56cb5)
-
-### 4. Payment Successful Screen:
-In the event of a successful transaction, the "Payment Successful" screen appears, displaying a randomly generated booking number each time. It can also be initialized (although there is no API for it). Clicking the "Super" button returns to the initial screen, and the Coordinator restarts the flow from the beginning.
-
-![6  Demonstration](https://github.com/semaDilthey/Employees-Info/assets/128741166/575c5f82-c9ea-4cee-b31a-84950ccad774)
-
-
 ## App Structure
 
-The app follows a modular structure, divided into different components:
+<details>
+  <summary><b>The app follows a modular structure, divided into different components:</b></summary>
 
 ```bash
 
- | | |____Resources
+ | | |____***Resources***
  | | | |____Assets.xcassets
  | | | | |____LaunchScreen.storyboard
- | | | | |____Main.storyboard
- | | |____Sources
- | | | |____ViewModels
+ | | |____***Sources***
+ | | | |____**ViewModels**
  | | | | |____BookingViewModel.swift
  | | | | |____PaidViewModel.swift
  | | | | |____MainViewModel.swift
  | | | | |____BaseViewModel
  | | | | | |____BaseViewModel.swift
  | | | | |____RoomViewModel.swift
- | | | |____Coordinator
+ | | | |____**Coordinator**
  | | | | |____AppCoordinator.swift
  | | | | |____Coordinator.swift
- | | | |____App
+ | | | |____**App**
  | | | | |____AppDelegate.swift
  | | | | |____SceneDelegate.swift
- | | | |____Other
+ | | | |____**Other**
  | | | | |____extensions
  | | | | |____CustomComponents
  | | | | | |____TagViewCollectionView
  | | | | | |____PagingCollectionView
  | | | | | |____RatingLabel
  | | | | | |____BlueButton
- | | | |____Models
+ | | | |____**Models**
  | | | | |____Hotel.swift
  | | | | |____Booking.swift
  | | | | |____Room.swift
- | | | |____NetworkLayer
+ | | | |____**NetworkLayer**
  | | | | |____NetworkManager.swift
  | | | | |____API
  | | | | | |____API.swift
@@ -82,7 +56,7 @@ The app follows a modular structure, divided into different components:
  | | | | | |____FetchingService.swift
  | | | | | |____Parser.swift
  | | | | | |____NetworkError.swift
- | | | |____Controllers
+ | | | |____**Controllers**
  | | | | |____Booking
  | | | | | |____Components
  | | | | | |____BookingViewController.swift
@@ -95,19 +69,43 @@ The app follows a modular structure, divided into different components:
  | | | | |____Main
  | | | | | |____MainViewController.swift
  | | | | | |____Components
- | | | |____Helper
+ | | | |____**Helper**
  | | | | |____Constants.swift
  | | | | |____Validator.swift
  | | | | |____Formatter.swift
- | | | |____Factory
+ | | | |____**Factory**
  | | | | |____ControllerFactory.swift
  | | |____fonts
 
 
 ```
+</details>
 
 
+ ## Presentation
+  ### 1. Main screen && Rooms screen : 
+  * Main:
+  At the top, there is a custom reusable Collection View with a Page Control for navigation. Additionally, below, there is a custom layout for displaying hotel features.
+  All of this is embedded within a Scroll View.
+  * Rooms:
+ This is a simple table view with 2 cells, as the API contains only 2 objects. It utilizes the same custom Collection View and custom layout for features. 
+ The "Learn more" button for each room is non-clickable. When either of the 2 rooms is selected, further details always load based on the ID == 1.
 
+![Демонстрация отеля_1-2экран](https://github.com/semaDilthey/HotelTest/assets/128741166/7a30de79-0124-4287-8215-ba891051b5b9)
+ 
 
-   
-   
+### 3. Booking Screen:
+The most complex screen in terms of both layout and business logic. It encompasses several views, one of which contains fields for entering email and phone number.
+Both are validated and must be filled in correctly. Additionally, expandable cells with 6 data input fields are implemented. By default, at least one tourist must be filled in to proceed to the payment screen. If any of the fields are left empty, they are highlighted in red, preventing further progression. 
+The "Add Tourist" button allows adding up to 4 individuals.
+
+### Layout presentation $~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ Validation
+![Демонстрация отеля_Ячейки_3 экран](https://github.com/semaDilthey/HotelTest/assets/128741166/256159f9-58a3-430e-b594-5ff5bf78400f),    $~~~~~~~~~~~~~~~~$     ![Демонстрация отеля_3-4экран_Валидация](https://github.com/semaDilthey/HotelTest/assets/128741166/387de716-3e79-4f23-aba8-05718ee0f7f0)
+
+### 4. Payment Successful Screen:
+In the event of a successful transaction, the "Payment Successful" screen appears, displaying a randomly generated booking number each time. It can also be initialized (although there is no API for it). Clicking the "Super" button returns to the initial screen, and the Coordinator restarts the flow from the beginning.
+
+### 5. Demo:
+
+![Демонстрация](https://github.com/semaDilthey/HotelTest/assets/128741166/5b3c470f-82d6-4784-a02b-cc0fe9769726)
+
